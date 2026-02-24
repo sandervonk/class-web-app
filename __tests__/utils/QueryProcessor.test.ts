@@ -89,4 +89,28 @@ describe("QueryProcessor", () => {
     const response: string = QueryProcessor(query);
     expect(response).toBe("undefined");
   });
+
+  test("should return prime numbers", () => {
+    const query = "Which of the following numbers are primes: 4, 5, 6, 7, 8?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("5, 7");
+  });
+
+  test("should handle chained multiply and plus", () => {
+    const query = "What is 6 multiplied by 24 plus 96?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("240");
+  });
+
+  test("should handle chained plus and minus", () => {
+    const query = "What is 10 plus 5 minus 3?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("12");
+  });
+
+  test("should handle chained multiply and divided by", () => {
+    const query = "What is 100 multiplied by 2 divided by 4?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("50");
+  });
 });
