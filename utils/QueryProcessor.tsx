@@ -17,9 +17,10 @@ export default function QueryProcessor(query: string): string {
     return "svonk";
   }
 
-  const plusMatch = q.match(/what is (\d+) plus (\d+)\?/);
+  const plusMatch = q.match(/what is ([\d\s+]+)\?/);
   if (plusMatch) {
-    return String(Number(plusMatch[1]) + Number(plusMatch[2]));
+    const numbers = plusMatch[1].split("plus").map((n) => Number(n.trim()));
+    return String(numbers.reduce((sum, num) => sum + num, 0));
   }
 
   const multiplyMatch = q.match(/what is (\d+) multiplied by (\d+)\?/);
@@ -30,6 +31,13 @@ export default function QueryProcessor(query: string): string {
   const minusMatch = q.match(/what is (\d+) minus (\d+)\?/);
   if (minusMatch) {
     return String(Number(minusMatch[1]) - Number(minusMatch[2]));
+  }
+
+  const divideMatch = q.match(/what is (\d+) divided by (\d+)\?/);
+  if (divideMatch) {
+    const dividend = Number(divideMatch[1]);
+    const divisor = Number(divideMatch[2]);
+    return divisor !== 0 ? String(dividend / divisor) : "undefined";
   }
 
   const largestMatch = q.match(/which of the following numbers is the largest[:\s]+([\d,\s]+)\?/);
