@@ -47,4 +47,16 @@ describe("QueryProcessor", () => {
     const response: string = QueryProcessor(query);
     expect(response).toBe("64");
   });
+
+  test("should return the product of two numbers", () => {
+    const query = "What is 21 multiplied by 87?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("1827");
+  });
+
+  test("should return the difference of two numbers", () => {
+    const query = "What is 49 minus 64?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("-15");
+  });
 });
