@@ -16,8 +16,16 @@ export default function QueryProcessor(query: string): string {
   if (q.includes("name")) {
     return "svonk";
   }
-  if (q.includes("Which of the following numbers is the largest: 70, 86, 60?")) {
-    return "86";
+
+  const plusMatch = q.match(/what is (\d+) plus (\d+)\?/);
+  if (plusMatch) {
+    return String(Number(plusMatch[1]) + Number(plusMatch[2]));
+  }
+
+  const largestMatch = q.match(/which of the following numbers is the largest[:\s]+([\d,\s]+)\?/);
+  if (largestMatch) {
+    const numbers = largestMatch[1].split(",").map((n) => Number(n.trim()));
+    return String(Math.max(...numbers));
   }
 
   return "";
