@@ -14,7 +14,7 @@ export default function QueryProcessor(query: string): string {
   }
 
   if (q.includes("name")) {
-    return "Sander";
+    return "svonk";
   }
 
   return "";
