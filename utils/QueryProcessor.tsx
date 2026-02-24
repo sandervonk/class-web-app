@@ -34,25 +34,25 @@ export default function QueryProcessor(query: string): string {
     }
 
     // Evaluate left-to-right
-    if (tokens.length > 0 && typeof tokens[0] === 'number') {
+    if (tokens.length > 0 && typeof tokens[0] === "number") {
       let result = tokens[0] as number;
       for (let i = 1; i < tokens.length; i += 2) {
         const operator = tokens[i] as string;
         const operand = tokens[i + 1] as number;
         switch (operator) {
-          case 'plus':
+          case "plus":
             result += operand;
             break;
-          case 'minus':
+          case "minus":
             result -= operand;
             break;
-          case 'multiplied by':
+          case "multiplied by":
             result *= operand;
             break;
-          case 'divided by':
+          case "divided by":
             result = operand === 0 ? NaN : result / operand;
             break;
-          case 'to the power of':
+          case "to the power of":
             result = Math.pow(result, operand);
             break;
         }
@@ -85,10 +85,11 @@ export default function QueryProcessor(query: string): string {
     return numbers.includes(0) ? "undefined" : String(numbers.reduce((quotient, num) => quotient / num));
   }
 
-  const powerMatch = q.match(/what is ([\d\s^]+)\?/);
+  const powerMatch = q.match(/what is (\d+) to the power of (\d+)\?/);
   if (powerMatch) {
-    const numbers = powerMatch[1].split("to the power of").map((n) => Number(n.trim()));
-    return String(numbers.reduce((result, num) => Math.pow(result, num)));
+    const base = BigInt(powerMatch[1]);
+    const exponent = BigInt(powerMatch[2]);
+    return String(base ** exponent);
   }
 
   const largestMatch = q.match(/which of the following numbers is the largest[:\s]+([\d,\s]+)\?/);
