@@ -17,6 +17,14 @@ export default function QueryProcessor(query: string): string {
     return "svonk";
   }
 
+  // Handle power operations with BigInt for precision (must be before chained match)
+  const powerMatch = q.match(/what is (\d+) to the power of (\d+)\?/);
+  if (powerMatch) {
+    const base = BigInt(powerMatch[1]);
+    const exponent = BigInt(powerMatch[2]);
+    return String(base ** exponent);
+  }
+
   // Handle chained arithmetic operations (e.g., "What is 6 multiplied by 24 plus 96?")
   const chainedMatch = q.match(/what is ([\d\s]+(?:(?:plus|minus|multiplied by|divided by|to the power of)[\d\s]+)+)\?/);
   if (chainedMatch) {
@@ -85,13 +93,6 @@ export default function QueryProcessor(query: string): string {
     return numbers.includes(0) ? "undefined" : String(numbers.reduce((quotient, num) => quotient / num));
   }
 
-  const powerMatch = q.match(/what is (\d+) to the power of (\d+)\?/);
-  if (powerMatch) {
-    const base = BigInt(powerMatch[1]);
-    const exponent = BigInt(powerMatch[2]);
-    return String(base ** exponent);
-  }
-
   const largestMatch = q.match(/which of the following numbers is the largest[:\s]+([\d,\s]+)\?/);
   if (largestMatch) {
     const numbers = largestMatch[1].split(",").map((n) => Number(n.trim()));
@@ -123,6 +124,52 @@ export default function QueryProcessor(query: string): string {
     };
     const primes = numbers.filter(isPrime);
     return primes.join(", ");
+  }
+
+  // Scrabble score calculation
+  const scrabbleMatch = q.match(/what is the scrabble score of (\w+)\?/);
+  if (scrabbleMatch) {
+    const word = scrabbleMatch[1].toLowerCase();
+    const scores: { [key: string]: number } = {
+      a: 1,
+      e: 1,
+      i: 1,
+      o: 1,
+      u: 1,
+      l: 1,
+      n: 1,
+      r: 1,
+      s: 1,
+      t: 1,
+      d: 2,
+      g: 2,
+      b: 3,
+      c: 3,
+      m: 3,
+      p: 3,
+      f: 4,
+      h: 4,
+      v: 4,
+      w: 4,
+      y: 4,
+      k: 5,
+      j: 8,
+      x: 8,
+      q: 10,
+      z: 10,
+    };
+    const score = word.split("").reduce((total, letter) => total + (scores[letter] || 0), 0);
+    return String(score);
+  }
+
+  // Anagram detection
+  const anagramMatch = q.match(/which of the following is an anagram of (\w+)[:\s]+([\w,\s]+)\?/);
+  if (anagramMatch) {
+    const targetWord = anagramMatch[1].toLowerCase();
+    const options = anagramMatch[2].split(",").map((w) => w.trim().toLowerCase());
+    const sortedTarget = targetWord.split("").sort().join("");
+    const anagram = options.find((word) => word.split("").sort().join("") === sortedTarget);
+    return anagram || "";
   }
 
   return "";

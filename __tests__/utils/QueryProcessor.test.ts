@@ -113,4 +113,16 @@ describe("QueryProcessor", () => {
     const response: string = QueryProcessor(query);
     expect(response).toBe("50");
   });
+
+  test("should handle power operations", () => {
+    const query = "What is 2 to the power of 10?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("1024");
+  });
+
+  test("should handle large power operations", () => {
+    const query = "What is 93 to the power of 87?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("3131157058648565546505863528476612187375262203073933142728193965373298908341823968291800816557320938095562841304003785961198823365437");
+  });
 });
