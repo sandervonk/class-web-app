@@ -29,4 +29,16 @@ describe("QueryProcessor", () => {
     const response: string = QueryProcessor(query);
     expect(response).toBe("svonk");
   });
+
+  test("should return the sum of two numbers", () => {
+    const query = "What is 5 plus 3?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("8");
+  });
+
+  test("should return the largest number", () => {
+    const query = "Which of the following numbers is the largest: 3, 7, 2?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("7");
+  });
 });
