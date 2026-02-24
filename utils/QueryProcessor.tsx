@@ -17,6 +17,50 @@ export default function QueryProcessor(query: string): string {
     return "svonk";
   }
 
+  // Handle chained arithmetic operations (e.g., "What is 6 multiplied by 24 plus 96?")
+  const chainedMatch = q.match(/what is ([\d\s]+(?:(?:plus|minus|multiplied by|divided by|to the power of)[\d\s]+)+)\?/);
+  if (chainedMatch) {
+    const expression = chainedMatch[1].trim();
+    // Tokenize: split into numbers and operators
+    const tokens: (number | string)[] = [];
+    const regex = /(\d+)|(plus|minus|multiplied by|divided by|to the power of)/g;
+    let match;
+    while ((match = regex.exec(expression)) !== null) {
+      if (match[1]) {
+        tokens.push(Number(match[1]));
+      } else if (match[2]) {
+        tokens.push(match[2]);
+      }
+    }
+
+    // Evaluate left-to-right
+    if (tokens.length > 0 && typeof tokens[0] === 'number') {
+      let result = tokens[0] as number;
+      for (let i = 1; i < tokens.length; i += 2) {
+        const operator = tokens[i] as string;
+        const operand = tokens[i + 1] as number;
+        switch (operator) {
+          case 'plus':
+            result += operand;
+            break;
+          case 'minus':
+            result -= operand;
+            break;
+          case 'multiplied by':
+            result *= operand;
+            break;
+          case 'divided by':
+            result = operand === 0 ? NaN : result / operand;
+            break;
+          case 'to the power of':
+            result = Math.pow(result, operand);
+            break;
+        }
+      }
+      return isNaN(result) ? "undefined" : String(result);
+    }
+  }
+
   const plusMatch = q.match(/what is ([\d\s+]+)\?/);
   if (plusMatch) {
     const numbers = plusMatch[1].split("plus").map((n) => Number(n.trim()));
@@ -57,6 +101,7 @@ export default function QueryProcessor(query: string): string {
   if (squareAndCubeMatch) {
     const numbers = squareAndCubeMatch[1].split(",").map((n) => Number(n.trim()));
     const isSquareAndCube = (num: number) => {
+      if (num <= 1) return false; // Exclude 0 and 1
       const sqrt = Math.sqrt(num);
       const cbrt = Math.cbrt(num);
       return Number.isInteger(sqrt) && Number.isInteger(cbrt);
