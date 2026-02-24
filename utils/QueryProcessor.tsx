@@ -27,6 +27,11 @@ export default function QueryProcessor(query: string): string {
     return String(Number(multiplyMatch[1]) * Number(multiplyMatch[2]));
   }
 
+  const minusMatch = q.match(/what is (\d+) minus (\d+)\?/);
+  if (minusMatch) {
+    return String(Number(minusMatch[1]) - Number(minusMatch[2]));
+  }
+
   const largestMatch = q.match(/which of the following numbers is the largest[:\s]+([\d,\s]+)\?/);
   if (largestMatch) {
     const numbers = largestMatch[1].split(",").map((n) => Number(n.trim()));
