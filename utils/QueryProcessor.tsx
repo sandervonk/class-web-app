@@ -29,7 +29,7 @@ export default function QueryProcessor(query: string): string {
     return String(numbers.reduce((product, num) => product * num, 1));
   }
 
-  const minusMatch = q.match(/what is ([\d\s-]+)\?/);
+  const minusMatch = q.match(/what is (\d+(?: minus \d+)+)\?/);
   if (minusMatch) {
     const numbers = minusMatch[1].split("minus").map((n) => Number(n.trim()));
     return String(numbers.reduce((difference, num) => difference - num));
@@ -39,6 +39,12 @@ export default function QueryProcessor(query: string): string {
   if (divideMatch) {
     const numbers = divideMatch[1].split("divided by").map((n) => Number(n.trim()));
     return numbers.includes(0) ? "undefined" : String(numbers.reduce((quotient, num) => quotient / num));
+  }
+
+  const powerMatch = q.match(/what is ([\d\s^]+)\?/);
+  if (powerMatch) {
+    const numbers = powerMatch[1].split("to the power of").map((n) => Number(n.trim()));
+    return String(numbers.reduce((result, num) => Math.pow(result, num)));
   }
 
   const largestMatch = q.match(/which of the following numbers is the largest[:\s]+([\d,\s]+)\?/);

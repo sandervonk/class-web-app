@@ -59,4 +59,34 @@ describe("QueryProcessor", () => {
     const response: string = QueryProcessor(query);
     expect(response).toBe("-15");
   });
+
+  test("should return the sum of multiple numbers", () => {
+    const query = "What is 10 plus 20 plus 30?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("60");
+  });
+
+  test("should return the product of multiple numbers", () => {
+    const query = "What is 2 multiplied by 3 multiplied by 4?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("24");
+  });
+
+  test("should return the difference of multiple numbers", () => {
+    const query = "What is 100 minus 30 minus 20?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("50");
+  });
+
+  test("should return the quotient of multiple numbers", () => {
+    const query = "What is 100 divided by 5 divided by 2?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("10");
+  });
+
+  test("should return undefined for division by zero", () => {
+    const query = "What is 10 divided by 0?";
+    const response: string = QueryProcessor(query);
+    expect(response).toBe("undefined");
+  });
 });
